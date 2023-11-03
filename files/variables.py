@@ -2,4 +2,4 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent.parent
 FILES_DIR = ROOT_DIR / '_img/'
-WINDOW_ICON_PATH = FILES_DIR / 'icone.png'
+WINDOW_ICON_PATH = FILES_DIR / 'icone2.png'

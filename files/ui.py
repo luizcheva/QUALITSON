@@ -25,16 +25,16 @@ class ChatWindow(QMainWindow):
         self.setMinimumSize(700, 600)
 
         # Adicione um QScrollArea para a grade de mensagens
-        scroll_area = QScrollArea()
-        layout.addWidget(scroll_area)
-        scroll_area.setWidgetResizable(True)
+        self.scroll_area = QScrollArea()
+        layout.addWidget(self.scroll_area)
+        self.scroll_area.setWidgetResizable(True)
 
         # Crie um widget para conter a grade de mensagens
-        scroll_content = QWidget()
-        scroll_area.setWidget(scroll_content)
+        self.scroll_content = QWidget()
+        self.scroll_area.setWidget(self.scroll_content)
 
         self.message_grid = QGridLayout()
-        scroll_content.setLayout(self.message_grid)
+        self.scroll_content.setLayout(self.message_grid)
 
         self.user_input = QLineEdit()
         margins = [TEXT_MARGIN for _ in range(4)]
@@ -91,6 +91,11 @@ class ChatWindow(QMainWindow):
 
         row = self.message_grid.rowCount()
         self.message_grid.addWidget(message_box, row, 0 if is_user else 1)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        v_scrollbar = self.scroll_area.verticalScrollBar()
+        v_scrollbar.setValue(v_scrollbar.maximum())
 
     def send_user_message(self):
         user_message = self.user_input.text()
