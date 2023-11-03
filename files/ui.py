@@ -87,7 +87,7 @@ class ChatWindow(QMainWindow):
                 "background-color: #DDD; color: #333; border-radius: 10px; "
                 f"padding: 10px; font-size: {SMALL_FONT_SIZE}px;"
             )
-            message_box.setMinimumHeight(200)
+            message_box.setMinimumHeight(250)
 
         row = self.message_grid.rowCount()
         self.message_grid.addWidget(message_box, row, 0 if is_user else 1)
@@ -185,11 +185,15 @@ class ChatWindow(QMainWindow):
                             f'Problema({str(item)}) - Lote: {valor["LOTE"]} - '
                             f'Em {valor["DATA_OCORRENCIA"]} foi aberta uma RO '
                             f'para esse problema ({valor["IDENTIFICADOR"]}), '
-                            f'a disposição foi "{valor["DISPOSICAO"]}", '
-                            '<br>Segue imagem do problema.<br>'
+                            'onde sua classificação é '
+                            f'"{valor["CLASSIFICACAO_PROBLEMA"]}" '
+                            f'onde a disposição foi "{valor["DISPOSICAO"]}" '
+                            '<br><br>'
                         )
                         self.guardaROs.append(informacao)
                         self.guardaROs_img.append(path)
+                    msg_img = "Segue a imagem do problema:<br>"
+                    self.guardaROs.append(msg_img)
                     qualitison_ROs = ''.join(self.guardaROs)
                     return (qualitison_ROs, path)
                 else:
