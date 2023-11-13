@@ -91,11 +91,8 @@ class ChatWindow(QMainWindow):
 
         row = self.message_grid.rowCount()
         self.message_grid.addWidget(message_box, row, 0 if is_user else 1)
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        v_scrollbar = self.scroll_area.verticalScrollBar()
-        v_scrollbar.setValue(v_scrollbar.maximum())
+        scroll_bar = self.scroll_area.verticalScrollBar()
+        scroll_bar.setValue(scroll_bar.maximum())
 
     def send_user_message(self):
         user_message = self.user_input.text()
