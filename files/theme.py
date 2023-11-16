@@ -5,10 +5,11 @@ DARKER_PRIMARY_COLOR = '#16658a'
 DARKEST_PRIMARY_COLOR = '#115270'
 # Sizing
 BIG_FONT_SIZE = 40
-MEDIUM_FONT_SIZE = 24
-SMALL_FONT_SIZE = 18
-TEXT_MARGIN = 15
+MEDIUM_FONT_SIZE = 18
+SMALL_FONT_SIZE = 12
+TEXT_MARGIN = 0.5
 MINIMUM_WIDTH = 500
+MINIMUM_HEIGHT = 500
 
 
 qss = f"""
@@ -29,7 +30,7 @@ qss = f"""
 
 def setupTheme():
     qdarktheme.setup_theme(
-        theme='dark',
+        theme='light',
         corner_shape='rounded',
         custom_colors={
             "[dark]": {

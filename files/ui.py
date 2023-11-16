@@ -1,12 +1,16 @@
 import sys
 import os
-from PySide6.QtWidgets import (QApplication, QMainWindow, QTextEdit,
-                               QVBoxLayout, QWidget, QGridLayout, QLineEdit,
-                               QPushButton, QScrollArea, QMessageBox)
+from PySide6.QtWidgets import (
+    QApplication, QMainWindow, QTextEdit,
+    QVBoxLayout, QWidget, QGridLayout, QLineEdit,
+    QPushButton, QScrollArea, QMessageBox, QHBoxLayout
+)
 from PySide6.QtCore import Qt
 from files.request import connectionBD
-from files.theme import (MEDIUM_FONT_SIZE, MINIMUM_WIDTH,
-                         TEXT_MARGIN, SMALL_FONT_SIZE)
+from files.theme import (
+    MEDIUM_FONT_SIZE, MINIMUM_WIDTH,
+    TEXT_MARGIN, SMALL_FONT_SIZE, MINIMUM_HEIGHT,
+)
 from PIL import Image
 
 
@@ -38,7 +42,7 @@ class ChatWindow(QMainWindow):
 
         self.user_input = QLineEdit()
         margins = [TEXT_MARGIN for _ in range(4)]
-        self.user_input.setMinimumHeight(MEDIUM_FONT_SIZE * 2)
+        self.user_input.setMinimumHeight(MINIMUM_HEIGHT)
         self.user_input.setMinimumWidth(MINIMUM_WIDTH)
         self.user_input.setStyleSheet(f'font-size: {MEDIUM_FONT_SIZE}px;')
         self.user_input.setAlignment(Qt.AlignLeft | Qt.AlignTop)
@@ -49,7 +53,7 @@ class ChatWindow(QMainWindow):
 
         # Adicione campos de entrada e botão a um widget que será esticável
         bottom_widget = QWidget()
-        bottom_layout = QVBoxLayout(bottom_widget)
+        bottom_layout = QHBoxLayout(bottom_widget)
         bottom_layout.addWidget(self.user_input)
         bottom_layout.addWidget(self.send_button)
 
