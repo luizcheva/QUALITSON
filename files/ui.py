@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout, QWidget, QGridLayout, QLineEdit,
     QPushButton, QScrollArea, QMessageBox, QHBoxLayout
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QCoreApplication
 from files.request import connectionBD
 from files.theme import (
     MEDIUM_FONT_SIZE, MINIMUM_WIDTH,
@@ -26,7 +26,7 @@ class ChatWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
 
-        self.setMinimumSize(700, 600)
+        self.setMinimumSize(900, 700)
 
         # Adicione um QScrollArea para a grade de mensagens
         self.scroll_area = QScrollArea()
@@ -86,6 +86,7 @@ class ChatWindow(QMainWindow):
                 f"padding: 10px; font-size: {SMALL_FONT_SIZE}px;"
             )
             message_box.setMinimumHeight(self.alturaImg)
+            message_box.setMinimumWidth(640)
         else:
             message_box.setStyleSheet(
                 "background-color: #DDD; color: #333; border-radius: 10px; "
@@ -95,8 +96,7 @@ class ChatWindow(QMainWindow):
 
         row = self.message_grid.rowCount()
         self.message_grid.addWidget(message_box, row, 0 if is_user else 1)
-        scroll_bar = self.scroll_area.verticalScrollBar()
-        scroll_bar.setValue(scroll_bar.maximum())
+        self.roll()
 
     def send_user_message(self):
         user_message = self.user_input.text()
@@ -104,6 +104,7 @@ class ChatWindow(QMainWindow):
         if user_message:
             self.add_message("Você", user_message)
             self.chat_history.append(user_message)
+            self.roll()
             self.user_input.clear()
 
             # Qualitson Answere
@@ -118,17 +119,20 @@ class ChatWindow(QMainWindow):
                         self.add_message(
                             "Qualitson", html_img, is_user=False, is_img=True
                         )
+                        self.roll()
                         return
 
                     self.add_message(
                         "Qualitson", chatbot_response_RO, is_user=False
                     )
                     self.chat_history.append(chatbot_response_RO)
+                    self.roll()
                     return
 
             chatbot_response = self.generate_chatbot_response(user_message)
             self.add_message("Qualitson", chatbot_response, is_user=False)
             self.chat_history.append(chatbot_response)
+            self.roll()
         else:
             QMessageBox.critical(
                 self, "Error", "Você precisa inserir um registro válido."
@@ -174,9 +178,14 @@ class ChatWindow(QMainWindow):
     def generate_message_RO(self, item):
         self.guardaROs.clear()
         self.guardaROs_img.clear()
+        cont_opt = len(self.guardaResposta)
+        try:
+            opt_ = int(item)
+        except ValueError:
+            return None
         for resp in self.guardaResposta:
             num, lote, path, *_ = resp
-            if str(num) == item and len(item) == 1:
+            if str(num) == item and opt_ <= cont_opt:
                 if not lote:
                     informacao = (
                         'Lote vazio ou inexistente em nosso Banco de dados'
@@ -235,6 +244,11 @@ class ChatWindow(QMainWindow):
         html_img = f'<img src="{caminho}">'
 
         return html_img
+
+    def roll(self):
+        QCoreApplication.processEvents()
+        scroll_bar = self.scroll_area.verticalScrollBar()
+        scroll_bar.setValue(scroll_bar.maximum())
 
 
 if __name__ == '__main__':
