@@ -39,6 +39,8 @@ try:
                 f"SELECT * FROM {TABLE_NAME};"
             )
             cursor.execute(sql)
+            columns = [column[0] for column in cursor.description]
+            print(columns)
 
             data = cursor.fetchall()
             for item in data:
