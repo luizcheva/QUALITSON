@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+from datetime import datetime
 
 ROOT_DIR = Path(__file__).parent
 DB_NAME = 'db_QUALITSON.sqlite3'
@@ -51,3 +52,9 @@ class connectionBD():
     def close(self):
         self.cursor.close()
         self.connection.close()
+
+
+def convertData(data):
+    convert_date = datetime.strptime(data, '%Y-%m-%d')
+
+    return convert_date.strftime('%d/%m/%Y')
