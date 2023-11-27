@@ -24,7 +24,7 @@ class connectionBD():
     def __init__(self) -> None:
         try:
             self.conn = pymssql.connect(SERVER, USERNAME, PASSWORD, DATABASE)
-            self.cursor = self.conn.cursor()
+            self.cursor = self.conn.cursor(as_dict=True)
             self.columns = []
         except pymssql.Error as err:
             QMessageBox.critical(
@@ -36,7 +36,6 @@ class connectionBD():
         sql = f"SELECT * FROM {TABLE_CQ} WHERE ITEM LIKE '%{item}%';"
         self.cursor.execute(sql)
         registroProblema = self.cursor.fetchall()
-        self.columns = [column[0] for column in self.cursor.description]
         self.close()
         return registroProblema
 
@@ -44,7 +43,6 @@ class connectionBD():
         sql = f"SELECT * FROM {TABLE_RO} WHERE BATCH LIKE '%{lote}%';"
         self.cursor.execute(sql)
         registroROs = self.cursor.fetchall()
-        self.columns = [column[0] for column in self.cursor.description]
         self.close()
         return registroROs
 
@@ -52,8 +50,7 @@ class connectionBD():
         if consulta:
             list_dados = []
             for valor in consulta:
-                dicionario = dict(zip(self.columns, valor))
-                list_dados.append(dicionario)
+                list_dados.append(valor)
             return list_dados
         else:
             return
@@ -62,8 +59,7 @@ class connectionBD():
         if consulta:
             list_dados = []
             for valor in consulta:
-                dicionario = dict(zip(self.columns, valor))
-                list_dados.append(dicionario)
+                list_dados.append(valor)
             return list_dados
         else:
             return
@@ -101,12 +97,9 @@ def downloadImage(dir):
 
 
 if __name__ == '__main__':
-    # search = connectionBD()
-    # verifica = search.consultaProblema('103.170-1')
-    # dados = search.retornaProblema(verifica)
-    # for nc in dados:
-    #     print(nc['ID'])
-    #     data_reg = convertData(nc['DATE'])
-    #     print(data_reg)
-    print(ROOT_DIR)
-    print(DIR_IMG)
+    search = connectionBD()
+    verifica = search.consultaProblema('103.170-1')
+    problema = search.retornaProblema(verifica)
+    print(problema)
+    for nc in problema:
+        print(nc["BATCH"])
