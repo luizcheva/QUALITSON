@@ -33,15 +33,15 @@ class connectionBD():
             return
 
     def consultaProblema(self, item):
-        sql = f"SELECT * FROM {TABLE_CQ} WHERE ITEM LIKE '%{item}%';"
-        self.cursor.execute(sql)
+        sql = f"SELECT * FROM {TABLE_CQ} WHERE ITEM LIKE %s;"
+        self.cursor.execute(sql, (f'%{item}%',))
         registroProblema = self.cursor.fetchall()
         self.close()
         return registroProblema
 
     def consultaROs(self, lote):
-        sql = f"SELECT * FROM {TABLE_RO} WHERE BATCH LIKE '%{lote}%';"
-        self.cursor.execute(sql)
+        sql = f"SELECT * FROM {TABLE_RO} WHERE BATCH LIKE %d;"
+        self.cursor.execute(sql, (f'%{lote}%',))
         registroROs = self.cursor.fetchall()
         self.close()
         return registroROs
