@@ -1,34 +1,36 @@
-import pyodbc
+import pymssql
 import dotenv
 import os
 from datetime import datetime
 from requests import get
 from pathlib import Path
+from PySide6.QtWidgets import QMessageBox
 
-dotenv.load_dotenv()
+ROOT_DIR = Path(__file__).parent
+dotenv.load_dotenv(dotenv_path=ROOT_DIR / '.env')
 
 SERVER = os.environ['HOST']
 DATABASE = os.environ['DATABASE']
 USERNAME = os.environ['USER']
 PASSWORD = os.environ['PASSWORD']
-DRIVER = os.environ['DRIVER']
 TABLE_CQ = os.environ['TABLE_CQ']
 TABLE_RO = os.environ['TABLE_RO']
 KEY_CONTAINER = os.environ['KEY_CONTAINER']
 DIR_CONTAINER = os.environ['DIR_CONTAINER']
-ROOT_DIR = Path(__file__).parent
 DIR_IMG = ROOT_DIR / 'img/'
 
 
 class connectionBD():
     def __init__(self) -> None:
-        self.connection = (
-            f'DRIVER={DRIVER};SERVER={SERVER};DATABASE={DATABASE};'
-            f'UID={USERNAME};PWD={PASSWORD};'
-        )
-        self.conn = pyodbc.connect(self.connection)
-        self.cursor = self.conn.cursor()
-        self.columns = []
+        try:
+            self.conn = pymssql.connect(SERVER, USERNAME, PASSWORD, DATABASE)
+            self.cursor = self.conn.cursor()
+            self.columns = []
+        except pymssql.Error as err:
+            QMessageBox.critical(
+                None, "Error", f"Erro ao conectar:\n{str(err)}"
+            )
+            return
 
     def consultaProblema(self, item):
         sql = f"SELECT * FROM {TABLE_CQ} WHERE ITEM LIKE '%{item}%';"
