@@ -12,6 +12,9 @@ from files.theme import (
     TEXT_MARGIN, SMALL_FONT_SIZE, MINIMUM_HEIGHT,
 )
 from PIL import Image
+from files.request import (
+    KEY_CONTAINER, DIR_CONTAINER, convertData, downloadImage
+)
 
 
 class ChatWindow(QMainWindow):
@@ -159,7 +162,7 @@ class ChatWindow(QMainWindow):
                 )
                 self.guardaResposta.append(
                     (
-                        x, texto["BATCH"], texto["PATH"],
+                        x, texto["BATCH"], texto["END_AZURE"],
                         texto["DESCRIPTION"], texto["ITEM"]
                     )
                 )
@@ -196,13 +199,14 @@ class ChatWindow(QMainWindow):
                 problemas = bd.retornaROs(pesquisar)
                 if problemas is not None:
                     for valor in problemas:
+                        data_ocorrencia = convertData(valor["DATE"])
                         informacao = (
-                            f'Problema({str(item)}) - Lote: {valor["LOTE"]} - '
-                            f'Em {valor["DATA_OCORRENCIA"]} foi aberta uma RO '
-                            f'para esse problema ({valor["IDENTIFICADOR"]}), '
+                            f'Problema({str(item)}) - Lote: {valor["BATCH"]} -'
+                            f' Em {data_ocorrencia} foi aberta uma RO '
+                            f'para esse problema ({valor["IDENTIFICATION"]}), '
                             'onde sua classificação é '
-                            f'"{valor["CLASSIFICACAO_PROBLEMA"]}" '
-                            f'onde a disposição foi "{valor["DISPOSICAO"]}" '
+                            f'"{valor["CLASSIFICATION"]}" '
+                            f'onde a disposição foi "{valor["DISPOSITION"]}" '
                             '<br><br>'
                         )
                         self.guardaROs.append(informacao)
@@ -222,8 +226,9 @@ class ChatWindow(QMainWindow):
     def resize_image(self, image_path, width):
         # Carregue a imagem e redimensione-a usando Pillow
         self.alturaImg = 400
-        raizImg = image_path.replace("\\", "\\\\")
-        img = Image.open(raizImg)
+        raizImg = DIR_CONTAINER + image_path + KEY_CONTAINER
+        imgFile = downloadImage(raizImg)
+        img = Image.open(imgFile)
         largura, altura = img.size
         nova_largura = width
         nova_altura = round(altura * nova_largura / largura)
