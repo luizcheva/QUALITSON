@@ -12,7 +12,8 @@ if __name__ == '__main__':
     window = ChatWindow()
 
     # Icone
-    icon = QIcon(str(WINDOW_ICON_PATH))
+    icon = QIcon()
+    icon.addFile(str(WINDOW_ICON_PATH))
     window.setWindowIcon(icon)
     app.setWindowIcon(icon)
 

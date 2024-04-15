@@ -23,6 +23,15 @@ class ChatWindow(QMainWindow):
         self.initUI()
         self.chat_history = []
         self.setWindowTitle("Qualitson")
+        self.add_message(
+            "Qualitson",
+            "Seja bem-vindo ao <b>QUALITSON</b>.<br>Digite o número do item "
+            "que caso eu encontre dentro da minha base de dados, te mostrarei "
+            "todas as informações necessárias.",
+            is_user=False,
+            is_img=False,
+            welcome_msg=True
+        )
 
     def initUI(self):
         central_widget = QWidget()
@@ -35,6 +44,9 @@ class ChatWindow(QMainWindow):
         self.scroll_area = QScrollArea()
         layout.addWidget(self.scroll_area)
         self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setStyleSheet(
+            'border: none;'
+        )
 
         # Crie um widget para conter a grade de mensagens
         self.scroll_content = QWidget()
@@ -42,6 +54,10 @@ class ChatWindow(QMainWindow):
 
         self.message_grid = QGridLayout()
         self.scroll_content.setLayout(self.message_grid)
+        self.scroll_content.setStyleSheet(
+            'border: 1px solid transparent; padding: 20px;'
+            'margin-right: 20px; border-radius: 10px;'
+        )
 
         self.user_input = QLineEdit()
         margins = [TEXT_MARGIN for _ in range(4)]
@@ -71,11 +87,18 @@ class ChatWindow(QMainWindow):
         self.send_button.clicked.connect(self.send_user_message)
         self.user_input.returnPressed.connect(self.send_user_message)
 
-    def add_message(self, sender, message, is_user=True, is_img=False):
+    def add_message(
+        self, sender, message, is_user=True, is_img=False,
+        welcome_msg=False
+    ):
         message_text = f'<strong>{sender}:</strong><br>{message}'
         message_box = QTextEdit()
         message_box.setReadOnly(True)
         message_box.setHtml(message_text)
+        if welcome_msg:
+            message_box.setMaximumHeight(110)
+            message_box.setMaximumWidth(700)
+            message_box.setStyleSheet("background-color: transparent;")
 
         if is_user:
             message_box.setStyleSheet(
@@ -91,11 +114,12 @@ class ChatWindow(QMainWindow):
             message_box.setMinimumHeight(self.alturaImg)
             message_box.setMinimumWidth(640)
         else:
-            message_box.setStyleSheet(
-                "background-color: #DDD; color: #333; border-radius: 10px; "
-                f"padding: 10px; font-size: {SMALL_FONT_SIZE}px;"
-            )
-            message_box.setMinimumHeight(250)
+            if not welcome_msg:
+                message_box.setStyleSheet(
+                    "background-color: #DDD; color: #333; border-radius: 10px;"
+                    f" padding: 10px; font-size: {SMALL_FONT_SIZE}px;"
+                )
+                message_box.setMinimumHeight(250)
 
         row = self.message_grid.rowCount()
         self.message_grid.addWidget(message_box, row, 0 if is_user else 1)
